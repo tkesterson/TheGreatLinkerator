@@ -1,7 +1,7 @@
 {
   "name": "starting_code",
   "version": "1.0.0",
-  "description": "",
+  "description": "So, you want to build a full-stack JavaScript application with:",
   "main": "index.js",
   "scripts": {
     "postinstall": "npm run client:build",
@@ -39,5 +39,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rashadharrison/TheGreatLinkerator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rashadharrison/TheGreatLinkerator/issues"
+  },
+  "homepage": "https://github.com/rashadharrison/TheGreatLinkerator#readme"
 }
