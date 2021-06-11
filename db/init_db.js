@@ -59,8 +59,37 @@ async function buildTables() {
 }
 
 async function populateInitialData() {
+
+  console.log('CREATING LINKS....')
   try {
-    // create useful starting data
+    const linksToCreate = [
+      {
+        name: YouTube,
+        count: 1,
+        comments: 'This Youtube video is great',
+        date: '2021-06-01',
+        url: 'https://www.youtube.com'
+      },
+      {
+        name: Twitter,
+        count: 6,
+        comments: 'Twitter is an amazing resource',
+        date: '2021-06-02',
+        url: 'https://twitter.com'
+
+      },
+      
+      {
+        name: Github,
+        count: 4,
+        comments: 'Github is the best verison control platform',
+        date: '2021-06-8',
+        url: 'https://github.com'
+      }
+
+    ]
+    
+   
   } catch (error) {
     throw error;
   }
