@@ -93,23 +93,23 @@ async function populateInitialData() {
 
     console.log("Creating tags....");
 
-    await createTag({
+    await createTags({
       tagname: "version control",
     });
-    await createTag({
+    await createTags({
       tagname: "social media",
     });
 
-    await createTag({
+    await createTags({
       tagname: "search engine",
     });
     console.log("Tags created successfully");
 
     console.log("Creating links with tags....");
-    await createTagsWithLinks(1, 1);
-    await createTagsWithLinks(2, 2);
-    await createTagsWithLinks(3, 3);
-    await createTagsWithLinks(4, 4);
+    await createTagForLink(1, 1);
+    await createTagForLink(2, 2);
+    await createTagForLink(3, 3);
+    await createTagWithLink(4, 4);
 
     console.log("Tags with links created successfully");
 
@@ -125,6 +125,7 @@ async function rebuildDB() {
   try {
     client.connect();
     await dropTables();
+    await buildTables();
     await populateInitialData();
   } catch (error) {
     console.log("ERROR DURING REBUILD DB");
