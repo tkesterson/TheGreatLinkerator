@@ -1,4 +1,10 @@
 const apiRouter = require("express").Router();
+const {
+  getAllLinks,
+  getLinksByTagname,
+  createLink,
+  updateLink,
+} = require("../db");
 
 apiRouter.get("/", (req, res, next) => {
   res.send({
