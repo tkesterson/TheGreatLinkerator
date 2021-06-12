@@ -1,41 +1,49 @@
 // code to build and initialize DB goes here
 const {
-  client
-  // other db methods 
-} = require('./index');
+  client,
+  createLink,
+  createTags,
+  createTagForLink,
+  getLinksWithTags,
 
-async function buildTables() {
+  // other db methods
+} = require("./index");
+
+async function dropTables() {
+  console.log("Dropping all tables..");
+
   try {
-
-    client.connect();
-    console.log()
     await client.query(`
     DROP TABLE IF EXISTS link_tags;
     DROP TABLE IF EXISTS tags;
-    DROP TABLE IF EXISTS links;`
-    )
-    
+    DROP TABLE IF EXISTS links;`);
+    console.log("Finished dropping tables!");
+  } catch (error) {
+    console.error("Error dropping tables!");
+    throw error;
+  }
+}
 
-    // drop tables in correct order
-
-    // build tables in correct order
-
+async function buildTables() {
+  console.log("Starting to build tables...");
+  try {
     await client.query(`
     CREATE TABLE links (
 
       id SERIAL PRIMARY KEY,
       name varchar(255) UNIQUE NOT NULL,
+      url varchar(255) UNIQUE NOT NULL,
       count INTEGER,
       comments varchar(255) NOT NULL,
-      date DATE NOT NULL,
-      url varchar(255) UNIQUE NOT NULL,
+      date DATE NOT NULL
+  
     
       
     );
 
     CREATE TABLE tags (
       id SERIAL PRIMARY KEY,
-      name varchar(255) UNIQUE NOT NULL,
+      tagname varchar(255) UNIQUE NOT NULL,
 
 
 
@@ -51,51 +59,79 @@ async function buildTables() {
     
     
     
-    `)
-
+    `);
   } catch (error) {
     throw error;
   }
 }
 
 async function populateInitialData() {
-
-  console.log('CREATING LINKS....')
+  console.log("CREATING LINKS....");
   try {
-    const linksToCreate = [
-      {
-        name: YouTube,
-        count: 1,
-        comments: 'This Youtube video is great',
-        date: '2021-06-01',
-        url: 'https://www.youtube.com'
-      },
-      {
-        name: Twitter,
-        count: 6,
-        comments: 'Twitter is an amazing resource',
-        date: '2021-06-02',
-        url: 'https://twitter.com'
+    await createLink({
+      name: "Github",
+      url: "https://github.com",
+      count: 1,
+      comments: "Github is great!",
+    });
 
-      },
-      
-      {
-        name: Github,
-        count: 4,
-        comments: 'Github is the best verison control platform',
-        date: '2021-06-8',
-        url: 'https://github.com'
-      }
+    await createLink({
+      name: "Twitter",
+      url: "https://twitter.com",
+      count: 3,
+      comments: "Twitter is awesome",
+    });
 
-    ]
-    
-   
+    await createLink({
+      name: "Google",
+      url: "https://google.com",
+      count: 4,
+      comments: "Google is the best search engine!",
+    });
+
+    console.log("Links created successfully");
+
+    console.log("Creating tags....");
+
+    await createTag({
+      tagname: "version control",
+    });
+    await createTag({
+      tagname: "social media",
+    });
+
+    await createTag({
+      tagname: "search engine",
+    });
+    console.log("Tags created successfully");
+
+    console.log("Creating links with tags....");
+    await createTagsWithLinks(1, 1);
+    await createTagsWithLinks(2, 2);
+    await createTagsWithLinks(3, 3);
+    await createTagsWithLinks(4, 4);
+
+    console.log("Tags with links created successfully");
+
+    console.log("Add tags to links");
+
+    const links = await getLinksWithTags();
   } catch (error) {
     throw error;
   }
 }
 
-buildTables()
-  .then(populateInitialData)
-  .catch(console.error)
-  .finally(() => client.end());
+async function rebuildDB() {
+  try {
+    client.connect();
+    await dropTables();
+    await populateInitialData();
+  } catch (error) {
+    console.log("ERROR DURING REBUILD DB");
+    throw error;
+  }
+}
+
+module.exports = {
+  rebuildDB,
+};
