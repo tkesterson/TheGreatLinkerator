@@ -20,7 +20,6 @@ const createLink = async ({ name, count, comments, url }) => {
   try {
     const {
       rows: [links],
-      user,
     } = await client.query(
       `INSERT INTO links(name, count, comments, url)
       VALUES ($1, $2, $3, $4)
@@ -36,18 +35,18 @@ const createLink = async ({ name, count, comments, url }) => {
   }
 };
 
-const createTags = async ({ tagname }) => {
-
-
+const createTags = async (tagname) => {
   try {
     const { rows } = await client.query(
       `
-    INSERT INTO tags(tagname) VALUES($1)
+    INSERT INTO
+    tags(tagname)
+    VALUES($1)
     RETURNING*;
     
     
     `,
-      [tagList]
+      [tagname]
     );
 
     return rows;
@@ -84,7 +83,10 @@ const getLinksWithTags = async () => {
 const createTagForLink = async (linkId, tagId) => {
   try {
     await client.query(
-      `INSERT INTO links_tags("linkId", "tagId") VALUES ($1, $2) ON CONFLICT (linkId, tagId) DO NOTHING`,
+      `INSERT INTO links_tags("linkId", "tagId") 
+      VALUES ($1, $2)
+      ON CONFLICT (linkId, tagId)
+      DO NOTHING`,
       [linkId, tagId]
     );
   } catch (error) {
@@ -94,7 +96,9 @@ const createTagForLink = async (linkId, tagId) => {
 
 const updateCount = async (linkId, count) => {
   try {
-    await client.query(`UPDATE links SET count = $1 WHERE ID = $2`, [
+    await client.query(`UPDATE links 
+    SET count = $1
+    WHERE ID = $2`, [
       ++count,
       linkId,
     ]);
@@ -109,7 +113,12 @@ const addTagsToLinks = async (links) => {
 
   const { rows: tags } = await client.query(
     `
-  SELECT tags.*, links_tags.*, FROM tags JOIN links_tags ON tags.id = links_tags."linkId" WHERE links_tags."linkId" IN (${selectedTags})
+  SELECT tags.*, links_tags.*,
+  FROM tags
+  JOIN links_tags
+  ON tags.id = links_tags."linkId"
+  WHERE links_tags."linkId"
+  IN (${selectedTags})
   
   
   `,
@@ -138,7 +147,7 @@ module.exports = {
   getLinksWithTags,
   updateCount,
   addTagsToLinks,
-  createTagForLink
+  createTagForLink,
 
   // db methods
 };
