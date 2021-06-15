@@ -11,6 +11,7 @@ apiRouter.get("/", (req, res, next) => {
     message: "API is under construction!",
   });
 });
+
 apiRouter.get("/links", async (req, res, next) => {
   try {
     const links = await getAllLinks();

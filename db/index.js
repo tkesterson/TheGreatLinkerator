@@ -17,6 +17,7 @@ const getAllLinks = async () => {
 };
 
 const createLink = async ({ name, count, comments, url }) => {
+  const date = Date.now();
   try {
     const {
       rows: [links],
@@ -96,12 +97,12 @@ const createTagForLink = async (linkId, tagId) => {
 
 const updateCount = async (linkId, count) => {
   try {
-    await client.query(`UPDATE links 
+    await client.query(
+      `UPDATE links 
     SET count = $1
-    WHERE ID = $2`, [
-      ++count,
-      linkId,
-    ]);
+    WHERE id = $2`,
+      [++count, linkId]
+    );
   } catch (error) {
     console.error(error);
   }
