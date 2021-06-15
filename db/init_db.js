@@ -17,9 +17,10 @@ async function buildTables() {
 
   try {
     await client.query(`
-    DROP TABLE IF EXISTS link_tags;
-    DROP TABLE IF EXISTS tags;
-    DROP TABLE IF EXISTS links;`);
+    DROP TABLE IF EXISTS links_tags;
+    DROP TABLE IF EXISTS links;
+    DROP TABLE IF EXISTS tags;`);
+
     console.log("Finished dropping tables!");
   } catch (error) {
     console.error("Error dropping tables!");
@@ -29,15 +30,17 @@ async function buildTables() {
   console.log("Starting to build tables...");
 
   try {
+    console.log("TRY BLOCK");
     await client.query(`
     CREATE TABLE links (
 
       id SERIAL PRIMARY KEY,
-      name varchar(255) UNIQUE NOT NULL,
-      url varchar(255) UNIQUE NOT NULL,
+      name varchar(255) NOT NULL,
+      url varchar(255) NOT NULL,
       count INTEGER,
       comments varchar(255) NOT NULL,
-      date DATE NOT NULL
+      date DATE DEFAULT CURRENT_DATE,
+      UNIQUE(name, url)
   
     
       
@@ -45,7 +48,7 @@ async function buildTables() {
 
     CREATE TABLE tags (
       id SERIAL PRIMARY KEY,
-      tagname varchar(255) UNIQUE NOT NULL,
+      tagname varchar(255) UNIQUE NOT NULL
 
 
 
@@ -53,9 +56,9 @@ async function buildTables() {
 
     CREATE TABLE links_tags (
     id SERIAL PRIMARY KEY,
-    "linkTagsId" REFERENCES links(id),
-    "tagId" REFERENCES tags(id)
-
+    "linkTagsId" SERIAL REFERENCES links(id),
+    "tagId" SERIAL REFERENCES tags(id),
+    UNIQUE("linkTagsId", "tagId")
 
     );
     
@@ -111,7 +114,7 @@ async function populateInitialData() {
     await createTagForLink(1, 1);
     await createTagForLink(2, 2);
     await createTagForLink(3, 3);
-    await createTagWithLink(4, 4);
+
 
     console.log("Tags with links created successfully");
 
