@@ -1,5 +1,5 @@
-const client = require('./index')
-const { rebuildDB } = require('./init_db')
+// const client = require('./index')
+// const { rebuildDB } = require('./init_db')
 
 
-rebuildDB().catch(console.error).finally(() => client.end())
+// rebuildDB().catch(console.error).finally(() => client.end())

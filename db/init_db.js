@@ -5,11 +5,14 @@ const {
   createTags,
   createTagForLink,
   getLinksWithTags,
+  getAllLinks,
 
   // other db methods
 } = require("./index");
 
-async function dropTables() {
+async function buildTables() {
+  client.connect();
+
   console.log("Dropping all tables..");
 
   try {
@@ -22,10 +25,9 @@ async function dropTables() {
     console.error("Error dropping tables!");
     throw error;
   }
-}
 
-async function buildTables() {
   console.log("Starting to build tables...");
+
   try {
     await client.query(`
     CREATE TABLE links (
@@ -121,18 +123,19 @@ async function populateInitialData() {
   }
 }
 
-async function rebuildDB() {
-  try {
-    client.connect();
-    await dropTables();
-    await buildTables();
-    await populateInitialData();
-  } catch (error) {
-    console.log("ERROR DURING REBUILD DB");
-    throw error;
-  }
-}
+// async function rebuildDB() {
+//   try {
+//     client.connect();
+//     await dropTables();
+//     await buildTables();
+//     await populateInitialData();
+//   } catch (error) {
+//     console.log("ERROR DURING REBUILD DB");
+//     throw error;
+//   }
+// }
 
-module.exports = {
-  rebuildDB,
-};
+buildTables()
+  .then(populateInitialData)
+  .catch(console.error)
+  .finally(() => client.end());
