@@ -1,31 +1,48 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+
 import MaterialTable from "material-table";
+import { getAllLinks } from "../api/Table";
 
-const DataTable = ({ name, url, comments, tags }) => {
-  const [data, setData] = useState([]);
-  try {
-    const data = axios.get("/api/links/").then(response => {
+const DataTable = () => {
+  const [links, setLinks] = useState();
 
-      return response.data;
-    });
+  useEffect(() => {
+    async function fetchData() {
+      const data = await getAllLinks("Activities");
+      setLinks(data);
+    }
 
- 
-  } catch (error) {
-    console.error(error);
-  }
-
+    fetchData();
+  }, []);
+  const handleClick = () => {};
   return (
     <div>
       <MaterialTable
         title="Linkerator"
         columns={[
           { title: "Name", field: "name" },
-          { title: "Url", field: "url" },
+          {
+            title: "Url",
+            field: "url",
+            render: (rowData) => (
+              <a onClick={handleClick} href={rowData.url}>
+                {rowData.url}
+              </a>
+            ),
+          },
           { title: "Comments", field: "comments" },
-          { title: "Tags", field: "tags" },
+          {
+            title: "Tags",
+            field: "tags",
+            render: (rowData) => <button>{rowData.tags}</button>,
+          },
+          { title: "Click Count", field: "count" },
         ]}
-        data={[{ name: name, url: url, comments: comments, tags: tags }]}
+        data={links}
+        options={{
+          search: true,
+          sorting: true,
+        }}
       />
     </div>
   );
