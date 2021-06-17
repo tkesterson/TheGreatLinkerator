@@ -37,7 +37,7 @@ async function buildTables() {
       id SERIAL PRIMARY KEY,
       name varchar(255) NOT NULL,
       url varchar(255) NOT NULL,
-      count INTEGER,
+      count INTEGER DEFAULT 0,
       comments varchar(255) NOT NULL,
       date DATE DEFAULT CURRENT_DATE,
       UNIQUE(name, url)
@@ -115,7 +115,6 @@ async function populateInitialData() {
     throw error;
   }
 }
-
 
 buildTables()
   .then(populateInitialData)
