@@ -1,30 +1,34 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import MaterialTable from "material-table";
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-});
+const DataTable = ({ name, url, comments, tags }) => {
+  const [data, setData] = useState([]);
+  try {
+    const data = axios.get("/api/links/").then(response => {
 
+      return response.data;
+    });
 
-
-export default function DataTable(records, headCells) {
-
-  const classes = useStyles();
-
-  const TblContainer = props => (
-    <Table></Table>
-  )
+ 
+  } catch (error) {
+    console.error(error);
+  }
 
   return (
-   <TblContainer />
+    <div>
+      <MaterialTable
+        title="Linkerator"
+        columns={[
+          { title: "Name", field: "name" },
+          { title: "Url", field: "url" },
+          { title: "Comments", field: "comments" },
+          { title: "Tags", field: "tags" },
+        ]}
+        data={[{ name: name, url: url, comments: comments, tags: tags }]}
+      />
+    </div>
   );
-}
+};
+
+export default DataTable;

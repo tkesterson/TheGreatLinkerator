@@ -16,18 +16,18 @@ const getAllLinks = async () => {
   }
 };
 
-const createLink = async ({ name, count, comments, url }) => {
+const createLink = async ({ name, url, comments }) => {
   try {
     const {
       rows: [links],
     } = await client.query(
-      `INSERT INTO links(name,url, count, comments)
-      VALUES ($1, $2, $3, $4)
+      `INSERT INTO links(name,url, comments)
+      VALUES ($1, $2, $3)
       ON CONFLICT(name, url) DO NOTHING
       RETURNING*;
       
       `,
-      [name, count, comments, url]
+      [name, url, comments]
     );
     return links;
   } catch (error) {
@@ -44,9 +44,9 @@ async function createTags(tagList) {
   try {
     await client.query(
       `
-      INSERT INTO tagname(name)
+      INSERT INTO tags (tagname)
       VALUES (${insertValues})
-      ON CONFLICT (name) DO NOTHING;
+      ON CONFLICT (tagname) DO NOTHING;
       `,
       tagList
     );
@@ -89,15 +89,17 @@ const getLinksWithTags = async () => {
   }
 };
 
-const createTagForLink = async (linkTagsId, tagId) => {
+const createTagForLink = async (linkId, tagId) => {
   try {
     await client.query(
-      `INSERT INTO links_tags("linkTagsId", "tagId") 
+      `INSERT INTO links_tags("linkId", "tagId") 
       VALUES ($1, $2)
-      ON CONFLICT ("linkTagsId", "tagId")
+      ON CONFLICT ("linkId", "tagId")
       DO NOTHING`,
-      [linkTagsId, tagId]
+      [linkId, tagId]
     );
+
+   
   } catch (error) {
     console.error(error);
   }
@@ -125,8 +127,8 @@ const addTagsToLinks = async (links) => {
   SELECT tags.*, links_tags.*
   FROM tags
   JOIN links_tags
-  ON tags.id = links_tags."linkTagsId"
-  WHERE links_tags."linkTagsId"
+  ON tags.id = links_tags."linkId"
+  WHERE links_tags."linkId"
   IN (${selectedTags})
   
   
@@ -137,7 +139,7 @@ const addTagsToLinks = async (links) => {
   links.forEach((link) => {
     link.tags = [];
     tags.forEach((tag) => {
-      if (tag.linkTagsId === link.id) {
+      if (tag.linkId === link.id) {
         link.tags.push(tag);
       }
     });
