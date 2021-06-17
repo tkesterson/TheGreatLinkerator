@@ -33,8 +33,9 @@ apiRouter.get("tags/:tagname/links", async (req, res, next) => {
 
 apiRouter.post("/links", async (req, res, next) => {
   try {
-    const { url } = req.body;
-    const newLink = await createLink({ url });
+    console.log(req.body);
+    const { name, url, comments, tags } = req.body;
+    const newLink = await createLink({ name, url, comments, tags });
     res.send(newLink);
   } catch (error) {
     next(error);
@@ -51,4 +52,3 @@ apiRouter.patch("/links/:id", async (req, res, next) => {
   }
 });
 module.exports = apiRouter;
- 

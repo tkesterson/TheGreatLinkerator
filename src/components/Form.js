@@ -5,14 +5,14 @@ import { createNewLink } from "../api/Form";
 const Form = () => {
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
-  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState("");
   const [tags, setTags] = useState([]);
 
   const [open, setOpen] = useState(false);
   function clearInput() {
     setName("");
     setUrl("");
-    setComment("");
+    setComments("");
     setTags([]);
   }
   const nChange = (evt) => {
@@ -25,7 +25,7 @@ const Form = () => {
   };
   const cChange = (evt) => {
     evt.preventDefault();
-    setComment(evt.target.value);
+    setComments(evt.target.value);
   };
   const tChange = (evt) => {
     evt.preventDefault();
@@ -41,7 +41,7 @@ const Form = () => {
 
   const clickHandler = async (evt) => {
     evt.preventDefault();
-    const response = await createNewLink({ name, url, comment, tags });
+    const response = await createNewLink({ name, url, comments, tags });
     if (!response.error) {
       clearInput();
       handleDrawerClose();
@@ -65,7 +65,7 @@ const Form = () => {
           <TextField
             label="Comment"
             fullWidth
-            value={comment}
+            value={comments}
             onChange={cChange}
           />
           <br></br>
