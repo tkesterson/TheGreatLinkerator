@@ -17,12 +17,11 @@ const getAllLinks = async () => {
 };
 
 const createLink = async ({ name, count, comments, url }) => {
-  const date = Date.now();
   try {
     const {
       rows: [links],
     } = await client.query(
-      `INSERT INTO links(name, count, comments, url)
+      `INSERT INTO links(name,url, count, comments)
       VALUES ($1, $2, $3, $4)
       ON CONFLICT(name, url) DO NOTHING
       RETURNING*;
@@ -36,25 +35,34 @@ const createLink = async ({ name, count, comments, url }) => {
   }
 };
 
-const createTags = async (tagname) => {
+async function createTags(tagList) {
+  if (tagList.length === 0) {
+    return;
+  }
+  const insertValues = tagList.map((_, index) => `$${index + 1}`).join("), (");
+  const selectValues = tagList.map((_, index) => `$${index + 1}`).join(", ");
   try {
+    await client.query(
+      `
+      INSERT INTO tagname(name)
+      VALUES (${insertValues})
+      ON CONFLICT (name) DO NOTHING;
+      `,
+      tagList
+    );
     const { rows } = await client.query(
       `
-    INSERT INTO
-    tags(tagname)
-    VALUES ($1)
-    RETURNING*;
-    
-    
-    `,
-      [tagname]
+      SELECT * FROM tags
+      WHERE tagname
+      IN (${selectValues});
+      `,
+      tagList
     );
-
     return rows;
   } catch (error) {
-    console.error(error);
+    throw error;
   }
-};
+}
 
 const getLinkTags = async () => {
   try {
@@ -129,7 +137,7 @@ const addTagsToLinks = async (links) => {
   links.forEach((link) => {
     link.tags = [];
     tags.forEach((tag) => {
-      if (tag.linkId === link.id) {
+      if (tag.linkTagsId === link.id) {
         link.tags.push(tag);
       }
     });
