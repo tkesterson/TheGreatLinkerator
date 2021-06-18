@@ -32,7 +32,6 @@ const Form = ({ links, setLinks }) => {
     const tags = evt.target.value;
     const tagsArray = tags.split(/\s+/);
     setTags(tagsArray);
-    console.log(tagsArray);
   };
   const handleDrawerOpen = () => {
     setOpen(true);
