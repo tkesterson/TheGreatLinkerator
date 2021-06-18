@@ -1,5 +1,4 @@
 export async function createNewLink({ name, url, comments, tags }) {
-  console.log(name, url, comments, tags);
   try {
     const response = await fetch("/api/links", {
       method: "POST",

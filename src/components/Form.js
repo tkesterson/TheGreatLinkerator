@@ -48,11 +48,7 @@ const Form = ({ links, setLinks }) => {
     if (!response.error) {
       clearInput();
       handleDrawerClose();
-      //data from response, ...links, push newLink, setLinks(newArray)
-      console.log(response);
-
       const newArray = [...links, response];
-
       setLinks(newArray);
     } else {
       alert(response.message);
