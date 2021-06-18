@@ -16,7 +16,6 @@
   "license": "ISC",
   "dependencies": {
     "@material-ui/core": "^4.11.4",
-    "@material-ui/lab": "*",
     "axios": "^0.19.2",
     "express": "^4.17.1",
     "material-table": "^1.69.3",
