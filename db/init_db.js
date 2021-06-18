@@ -1,14 +1,5 @@
 // code to build and initialize DB goes here
-const {
-  client,
-  createLink,
-  createTags,
-  createTagForLink,
-  getLinksWithTags,
-  getAllLinks,
-
-  // other db methods
-} = require("./index");
+const { client, createLink } = require("./index");
 
 async function buildTables() {
   client.connect();
@@ -77,40 +68,24 @@ async function populateInitialData() {
       name: "Github",
       url: "https://github.com",
       comments: "Github is great!",
+      tags: ["version", "control"],
     });
 
     await createLink({
       name: "Twitter",
       url: "https://twitter.com",
       comments: "Twitter is awesome",
+      tags: ["social", "media"],
     });
 
     await createLink({
       name: "Google",
       url: "https://google.com",
       comments: "Google is the best search engine!",
+      tags: ["search", "engine"],
     });
 
     console.log("Links created successfully");
-
-    console.log("Creating tags....");
-
-    await createTags(["versioncontrol"]);
-    await createTags(["socialmedia"]);
-
-    await createTags(["search engine"]);
-    console.log("Tags created successfully");
-
-    console.log("Creating links with tags....");
-    await createTagForLink(1, 1);
-    await createTagForLink(2, 2);
-    await createTagForLink(3, 3);
-
-    console.log("Tags with links created successfully");
-
-    console.log("Add tags to links");
-
-    const links = await getLinksWithTags();
   } catch (error) {
     throw error;
   }

@@ -3,7 +3,7 @@ const {
   getAllLinks,
   getLinksByTagname,
   createLink,
-  updateLink,
+  updateCount,
 } = require("../db");
 
 apiRouter.get("/", (req, res, next) => {
@@ -44,8 +44,8 @@ apiRouter.post("/links", async (req, res, next) => {
 apiRouter.patch("/links/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { comment, tags, click } = req.body;
-    const link = await updateLink({ id, comment, tags, click });
+    const { count } = req.body;
+    const link = await updateCount(id, count);
     res.send(link);
   } catch (error) {
     next(error);
