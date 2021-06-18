@@ -2,7 +2,7 @@
 const { Client } = require("pg");
 const DB_NAME = "linkerator";
 const client = new Client(
-  process.env.DATABASE_URL || `linkgres://localhost:5432/${DB_NAME}`
+  process.env.DATABASE_URL || `postgres://localhost:5432/${DB_NAME}`
 );
 
 // database methods
