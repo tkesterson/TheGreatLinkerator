@@ -1,9 +1,14 @@
-import React from "react";
+import React, { Fragment, useState } from "react";
 
 import MaterialTable from "material-table";
 import { addClickCount } from "../api/Table";
+import { Link } from "@material-ui/core";
 
 const DataTable = ({ links, setLinks }) => {
+  const handleTagClick = (evt) => {
+    evt.preventDefault();
+  };
+
   const clickHandler = async (id, count) => {
     const response = await addClickCount(id, count);
 
@@ -30,24 +35,34 @@ const DataTable = ({ links, setLinks }) => {
             title: "Url",
             field: "url",
             render: (rowData) => (
-              <a
+              <Link
                 onClick={() => clickHandler(rowData.id, rowData.count)}
                 href={rowData.url}
               >
                 {rowData.url}
-              </a>
+              </Link>
             ),
           },
           { title: "Comments", field: "comments" },
           {
             title: "Tags",
             field: "tags",
-            render: (rowData) => rowData.tags.map((tag) => tag.tagname + " "),
+
+            render: (rowData) =>
+              rowData.tags.map((tag) => {
+                return (
+                  <Fragment key={tag.tagname}>
+                    <Link href={tag.tagname} onClick={handleTagClick}>
+                      #{tag.tagname}
+                    </Link>
+                    <br></br>
+                  </Fragment>
+                );
+              }),
           },
           { title: "Click Count", field: "count" },
         ]}
         data={links}
-        parentChildData={(row, rows) => rows.find((a) => a.id === row.parentId)}
         options={{
           search: true,
           sorting: true,
