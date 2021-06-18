@@ -2,9 +2,21 @@ import React, { useState, useEffect } from "react";
 import DataTable from "./Table";
 import { getSomething } from "../api";
 import Form from "./Form";
+import { getAllLinks } from "../api/Table";
 
 const App = () => {
   const [message, setMessage] = useState("");
+
+  const [links, setLinks] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await getAllLinks();
+      setLinks(data);
+    }
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     getSomething()
@@ -18,11 +30,10 @@ const App = () => {
 
   return (
     <div className="App">
-      <h1>Hello, World!</h1>
       <h2>{message}</h2>
-      <Form />
+      <Form {...{ links, setLinks }} />
 
-      <DataTable />
+      <DataTable {...{ links, setLinks }} />
     </div>
   );
 };

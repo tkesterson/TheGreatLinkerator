@@ -1,20 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import MaterialTable from "material-table";
-import { getAllLinks } from "../api/Table";
+import { addClickCount } from "../api/Table";
 
-const DataTable = () => {
-  const [links, setLinks] = useState();
+const DataTable = ({ links, setLinks }) => {
+  const clickHandler = async (id, count) => {
+    const response = await addClickCount(id, count);
 
-  useEffect(() => {
-    async function fetchData() {
-      const data = await getAllLinks("Activities");
-      setLinks(data);
+    if (!response.error) {
+      const newArray = [...links].map((l) => {
+        if (l.id === id) {
+          l.count++;
+        }
+        return l;
+      });
+
+      setLinks(newArray);
+    } else {
+      alert(response.message);
     }
-
-    fetchData();
-  }, []);
-  const handleClick = () => {};
+  };
   return (
     <div>
       <MaterialTable
@@ -25,7 +30,10 @@ const DataTable = () => {
             title: "Url",
             field: "url",
             render: (rowData) => (
-              <a onClick={handleClick} href={rowData.url}>
+              <a
+                onClick={() => clickHandler(rowData.id, rowData.count)}
+                href={rowData.url}
+              >
                 {rowData.url}
               </a>
             ),
@@ -34,11 +42,12 @@ const DataTable = () => {
           {
             title: "Tags",
             field: "tags",
-            render: (rowData) => <button>{rowData.tags}</button>,
+            render: (rowData) => rowData.tags.map((tag) => tag.tagname + " "),
           },
           { title: "Click Count", field: "count" },
         ]}
         data={links}
+        parentChildData={(row, rows) => rows.find((a) => a.id === row.parentId)}
         options={{
           search: true,
           sorting: true,

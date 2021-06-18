@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Drawer, TextField, Button } from "@material-ui/core";
 import { createNewLink } from "../api/Form";
 
-const Form = () => {
+const Form = ({ links, setLinks }) => {
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
   const [comments, setComments] = useState("");
@@ -29,7 +29,10 @@ const Form = () => {
   };
   const tChange = (evt) => {
     evt.preventDefault();
-    setTags(evt.target.value);
+    const tags = evt.target.value;
+    const tagsArray = tags.split(/\s+/);
+    setTags(tagsArray);
+    console.log(tagsArray);
   };
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -45,6 +48,12 @@ const Form = () => {
     if (!response.error) {
       clearInput();
       handleDrawerClose();
+      //data from response, ...links, push newLink, setLinks(newArray)
+      console.log(response);
+
+      const newArray = [...links, response];
+
+      setLinks(newArray);
     } else {
       alert(response.message);
     }
@@ -69,7 +78,7 @@ const Form = () => {
             onChange={cChange}
           />
           <br></br>
-          <TextField label="Tags" fullWidth value={tags} onChange={tChange} />
+          <TextField label="Tags" fullWidth onChange={tChange} />
           <br></br>
           <Button variant="outlined" onClick={clickHandler}>
             Create!
